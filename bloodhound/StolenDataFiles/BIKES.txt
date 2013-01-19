@@ -1,0 +1,11 @@
+Jurisdiction Code	Report Year	Occurence Number	Property Case Status	Item Status	Manufacturer's name	Style	Model	Color	Type	Seed	Serial number	Plate or Sticker	Brake Type	Fender Type	Frame Size	Handle Bars	Registration Number	Wheel size	Seat style
+VA	2012	5435	1	1	GARY FISHER	M	PIRANHA	SILRED	MT	21									
+VA	2012	63345	1	1	CANNONDALE	M	CAD9	WHI	RC	21	SN0234324		D		63				
+VA	2012	643634	1	1	SCHWINN	M		BRNBLK	MT	15					17				
+VA	2012	543535	1	1	NORCO	M		BRNRED	RC	27					17				
+VA	2012	232423	1	1	GIANT	M	NRS-2	RED	XX	0	SN4432423								
+VA	2012	23222	1	1	OTHER	M		YELGRY	MT	0									
+VA	2013	3232	1	1	SCHWINN	M		BLU	XX	18	sn432432432								
+VA	2013	31213	1	1	OTHER	M	COVE HUSTLER	BGE	MT	12	as		D				S		
+VA	2013	1321312	1	1	CANNONDALE	M	JECKYL	BGE	MT	24									
+VA	2013	123	1	1	TREK	M	1.2 ALPHA	BLK	RG	27	WER2435425				56		R		X

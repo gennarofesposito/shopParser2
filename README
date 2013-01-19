@@ -1,0 +1,66 @@
+* What is it?
+Parser for filtering content from  sales sites (at the moment just craigslist)
+
+* Intent
+To help people locate stolen items
+
+* Install
+I'm afarid it wondows and c# for now.
+1) Install IIS web server on your machine
+  i)Control Panel // Programs and Features // turn windows features on and off (on the left hand menu) // then select IIS
+2) Download visual studio 2012 Express [VS2012 ]
+3) pull the code from github
+4) Run is VS2012 
+  i) open VS2012 in administrator mode by right clicking on its icon
+  ii) the solution [bloodhound.sln] file for bloodhound in VS2012
+  iii) right click on the bloohound project in the 'solution explorer' in VS2012  and select 'publish'
+  iv) the properties of the publish are set to deploy to localhost\index.htm which means it copies all the files to 'c:\inetpub\wwwroot\index.htm'
+  v) 
+  vi) the pubish only works properly in administrator mode as c:\inetpub\wwwroot is only admin writable - hence step i) above
+  
+
+* Code notes
+Endpoints
+  restful service with just a couple of enpoints that you can see defined at the to of the IbloohoundService class
+  a)   [WebGet(UriTemplate = "getCraigslistItems/{city}/{stolenDate}/{pageNumber}/{itemDescription}", ResponseFormat = WebMessageFormat.Json)]
+    this goes tot he craigslist web site to do a search query e.g.:
+    http://vancouver.en.craigslist.ca/search/sss?query=bike+kona+dawg&srchType=A    
+    it then tears the response apart using a mix of regular expressions and xPath to build a collection of partial 'CraigslistInfo' classes - one for 
+    each of the items found in the search. It then processes that collection and concurrently hits the sub-details page for each 'CraigslistInfo' entry 
+    in those search results to pull back extra details for the item. It uses the data from sub-details page (again torn apart using REGEX and XPATH ) 
+    to fill in the missing indata to fully instantiate all the 'CraigslistInfo' objects - then parses the collection of those 'CraigslistInfo'  objects 
+    out into the response JSON.
+  b)   [WebGet(UriTemplate = "getCraigslistItemsByRSS/{city}/{stolenDate}/{pageNumber}/{itemDescription}", ResponseFormat = WebMessageFormat.Json)]
+    This is exactly the same as a) but hits the RSS feed search instead of the ordinary web search. 
+    I wrote this first as it makes sense to parse the RSS in preference to the website as it's mor machine readable, but craigslist's RSS 
+    feed is total crap so eventually I switched to reading the web pages instead see a). This endpoint and branch of code should probably be deprecated
+
+Overview of web apges
+  bloodhound.htm 
+    this page that allows you to enter data in a form which it posts to the RESTful service, the service response is parsed in jQuery 
+    and the bloodhound page draws the results unsing some jQuery code
+  index.htm
+    this page just has two set of links directly calling the service :
+      the first set of links call the IIS instance and just drop the JSON on screen
+      the second set of links call the VS2012 debug instance of the services (you need to hit F5 in VS2012 to start these) - which will either 
+      show syou crash info or return JSON
+      I recommend using http://jsonviewer.stack.hu/ to view the JSON - it shows you it broken down in its other tab, or will format or validate it - beautiful!  
+  
+* Debugging
+  There's nmot much error logging as yet. until there is, by far the best way to debug is to hit F5 in VS2012 to run the 'Self Hosting' version 
+  of the site : this kicks off the services in VS2012 in debug mode - the entries in the bottom half of index.htm point to that instance and when 
+  crashes occur VSpops up and you can trace the fault and then place breakpoints as needed to trap the issue
+  
+* Usage
+  the bloodhound.htm web page (which gets deployed to 'c:\inetpub\wwwroot\bloodhound.htm') shows a form that posts to the service and interprets 
+  the results out on screen.
+  
+  
+* Enhancements / TODO
+  -- need to make the dodgy score not crap and make it explain itself
+  -- need to do some tinyeye integration
+  -- need to restrict results to only those lifted after the stolen date
+  -- add in some error handling
+  -- improve the front end using twitter bootstrap
+
+

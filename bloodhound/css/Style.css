@@ -1,0 +1,22 @@
+﻿html { height: 100% }
+body { height: 100%; margin: 0; padding: 0 }
+table { margin: 1em; border-collapse: collapse; }
+td, th { padding: .3em; border: 1px #ccc solid; }
+th { background: #fc9; text-transform:capitalize;}
+thead { background: #fc9; }
+tbody { background: #9cf; }
+#map_canvas { height: 90%; width: 90% }
+/* Rows */
+/*
+table tr:nth-child(odd){background-color:rgba(255,255,255,0.06);}
+table tr:nth-child(even){background-color:rgba(0,0,0,0.06);}
+*/
+/* Columns */
+table th:nth-child(odd),
+table td:nth-child(odd){background-color:rgba(255,255,255,0.06);}
+table th:nth-child(even),
+table td:nth-child(even){background-color:rgba(0,0,0,0.06);}
+/*
+Classes
+*/
+.warning{background-color: red;}

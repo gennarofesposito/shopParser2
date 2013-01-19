@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" language="JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" language="JavaScript" src="./script/utils.js"></script>
+    <style>
+        #formStuff li {
+            float: right;
+        }
+    </style>
+    <script type="text/javascript">
+        /*
+        //
+        // It all starts here called from the body onload event
+        // Pseudocode:
+        // a) Get and typecheck the parameters for data and the terms to search for
+        // b) then call Extract, Transform and then Load to E.T.L. the craigslist data
+        //
+        */
+        function init() {
+
+            var cityName = unescape(getParameterByName('cityName'));
+            if (cityName == "") {
+                cityName = "vancouver";
+            }
+            var pageNumber = unescape(getParameterByName('pageNumber'));
+            if (pageNumber == "") {
+                pageNumber = "0";
+            }
+            // Check stolenDate default value
+            // instead just set default values on the form
+            var stolenDate = unescape(getParameterByName('stolenDate'));
+            if (stolenDate == "") {
+                var d = new Date();
+                var curr_date = d.getDate();
+                var curr_month = d.getMonth() + 1; //Months are zero based
+                var curr_year = d.getFullYear();
+                $('#stolenDate').val(curr_year + "/" + curr_month + "/" + curr_date);
+            } else {
+                stolenDate = new Date(Date.parse(stolenDate));
+                $('#stolenDate').val(stolenDate.getFullYear() + "/" + stolenDate.getMonth() + "/" + stolenDate.getDate());
+            }
+
+            // get the item desciption
+            var itemDescription = getParameterByName('itemDescription');
+            if (itemDescription.length > 0) {
+                $('#itemDescription').val(itemDescription);
+            };
+            if (itemDescription == "") {
+                // Do nothing as there is no data to search for
+            } else {
+                //alert("Date: " + stolenDate + " itemDescription: " + itemDescription);
+                var rawDataCollection = extractCraigslist(cityName, itemDescription, $('#stolenDate').val().replace(/\//g, ""), pageNumber);
+                var tranformedDataCollection = transformCraigslist(rawDataCollection);
+                var resultDataCollection = loadCraigslist(tranformedDataCollection);
+            }
+        }
+
+
+        /*
+        //
+        // This does the Extract phase of the ETL for Craislist
+        // Pseudocode:
+        // a) Look for the searctems in craigslist
+        // b) For each matching summary page in the craigslist results 
+        //    that's beyond the start date, hit the the subpage with the full listings
+        // c) add each of those subpages into a collection of page data
+        // d) return that collection
+        */
+        function extractCraigslist(cityName, itemDescription, stolenDate, pageNumber) {
+            // First call the RSS search on craigslist
+            // Sample call http://vancouver.en.craigslist.ca/search/sss?query=bike+kona+dawg&srchType=A&format=rss
+            // see also : http://www.craigslist.org/about/rss geno to here
+            //
+            // But this is FATALLY FLAWED! - cannot do cross site stuff like this 
+            // as Ajax and Javascript calls in general are sandboxed to the local domain by the borwsers for security! 
+            // So i needed to make a back end service to get the stuff from Craigslit
+            // so I've written that in dot net
+            //
+            $('#debug').append("calling: http://localhost/getCraigslistItems/" + cityName + '/' + stolenDate + '/' + pageNumber  + '/' + escape(itemDescription) + "<br/>");
+            $.get('http://localhost/getCraigslistItems/' + cityName + '/' + stolenDate + '/' + pageNumber  + '/' + escape(itemDescription))
+            .success(function (data) {
+                $('#results').val = "";
+                $.each(data, function (key, val) {
+                    var imageHtml = "";
+                    if (val.images) {
+                        $.each(val.images, function (index, value) {
+                            imageHtml += "<img height='150' width='150' src='" + value + "'>&nbsp;"
+                        });
+                    }
+                    $('#results').append("<div>" + val.title + "<br/>" + val.decriptionHTML + "<br/><a target='blank' href='" + val.linkURL + "'>link to full article</a>&nbsp;date: " & val.datePostedParsed & "&nbsp;Dodginess : " + val.dodgyScore + "&nbsp;&nbsp;&nbsp;" + imageHtml + "</div><hr>");
+                });
+            })
+            .error(function (jqXHR, textStatus, errorThrown) {
+                alert("textStatus: " + textStatus + " : Errorthrown: " + errorThrown)
+                if (textStatus == 'timeout')
+                    console.log('The server is not responding');
+
+                if (textStatus == 'error')
+                    console.log(errorThrown);
+            });
+        }
+
+        
+        /*
+        // Tranform step for the craigslist data
+        // Pseudocode:
+        // a) Take each page from the collection of page data from the extract
+        // b) tidy it up be topping and tailing the useless HTML
+        // c) NOT IMPLEMENTED : do some clever metrics to score how dodgy the item is
+        */
+        function transformCraigslist(rawDataCollection) {
+            //see http://stackoverflow.com/questions/1979884/how-to-use-javascript-regex-over-multiple-lines
+            //var ss = "<pre>aaaa\nbbb\nccc</pre>ddd";
+            //var arr = ss.match(/<pre.*?<\/pre>/gm);
+            //alert(arr);     // null
+        }
+
+        /*
+        // Tranform step for the craigslist data
+        // Pseudocode:
+        // d) Take the topped and tailed page items from the tranform step 
+        //    and wrap them in suitable HTML
+        // e) NOT IMPLEMENTED : and do pagination
+        */
+        function loadCraigslist(tranformedDataCollection) {
+
+        }
+
+    </script>
+    <title></title>
+</head>
+<body onload="init()">
+    <form id="chooseDataForm" action="#">
+        <fieldset>
+            <legend>Select Date and stolen item desciption</legend>
+            <div id="formStuff">
+            <ul>
+                <li>
+                    <label for="stolenDate">Date Item Stolen (YYYY/MM/DD)&nbsp;:&nbsp;</label>
+                    <input id="stolenDate" name="stolenDate" />
+                </li>
+                <li>
+                    <label for="itemDescription">Key words to describe stolen item&nbsp;:</label>
+                    <input name="itemDescription" id="itemDescription" value="kona bike dawg" />
+                </li>
+                <li>
+                    <label for="cityName">City Name&nbsp;:&nbsp;</label>
+                    <input name="cityName" id="cityName" value="vancouver" />
+                </li>
+                <li>
+                    <label for="pageNumber">Page No&nbsp;:&nbsp;</label>
+                    <select id="pageNumber" />
+                        <option value="0" selected>1</option>
+                        <option value="1">2</option>
+                        <option value="2">3</option>
+                        <option value="3">4</option>
+                        <option value="4">5</option>
+                    </select>
+                </li>                
+            </ul>            
+            <input id="go" name="go" value="Go" type="submit" />
+            </div>
+        </fieldset>
+    </form>
+    <div id="results" class="results">result</div>
+    <hr />
+    <div id="debug"></div>
+</body>
+</html>

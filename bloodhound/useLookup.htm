@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <title>mClub Stats</title>
+  <meta http-equiv="content-type" charset="UTF-8" content="" />
+  <meta name="description" content="Stats on loyalty" />
+  <meta name="keywords" content="stats" />
+  <link rel="stylesheet" type="text/css" media="screen" href="./css/style.css" />
+  <script type="text/javascript" language="JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+  <script type="text/javascript" language="JavaScript" src="./script/utils.js"></script>
+  <script type="text/javascript" language="JavaScript" >
+      var deviceProxyId = getParameterByName('deviceProxyId');
+      if (deviceProxyId == "") {
+          deviceProxyId = "none";
+      }
+      getData('/counterCheck/' + deviceProxyId);
+  </script>
+</head>
+<body>
+    <div>
+    <h3>Counter Health Check</h3>
+    <p>Check on delta between counter table and audit tables. You can add a ?deviceProxyId=  parameter to the querystring to just check the relative counts for a device proxy. If you don't specify a speccific DeviceProxyId you are interested in, then all entries where the audit and counter are differnt are shown. </p>
+    </div>
+</body>
+</html>

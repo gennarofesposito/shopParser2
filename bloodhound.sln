@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Web
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bloodhound", "bloodhound\bloodhound.csproj", "{0B224175-79AC-4299-AD3D-6434702E4604}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfHosting", "SelfHosting\SelfHosting.csproj", "{58066FD1-2A8C-475B-A6D4-FC240ED4A66E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3C19BB41-73FA-40D8-84CF-5711678262F5}"
+	ProjectSection(SolutionItems) = preProject
+		README = README
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B224175-79AC-4299-AD3D-6434702E4604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B224175-79AC-4299-AD3D-6434702E4604}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B224175-79AC-4299-AD3D-6434702E4604}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B224175-79AC-4299-AD3D-6434702E4604}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58066FD1-2A8C-475B-A6D4-FC240ED4A66E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58066FD1-2A8C-475B-A6D4-FC240ED4A66E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58066FD1-2A8C-475B-A6D4-FC240ED4A66E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58066FD1-2A8C-475B-A6D4-FC240ED4A66E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

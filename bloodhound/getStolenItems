@@ -1,0 +1,93 @@
+using System;
+using System.Data;
+
+/// <summary>
+/// This class does the following:
+///     Calls a tab delimited file from an as yet unspecified location and imports it
+///     Iterates through that file, placing each stolen item from the last year into a Dataset
+///     Theoritically should take it from the last month
+///     Takes the Dataset and again runs each item through getCraiglistItems
+///     If there is a match to an item, returns that StolenItem Bean and the corresponding Craigslist Item bean to an Array
+///     Displays the array on an output page
+///     Police call the victim with the URL
+///     Victim says "Shit that is mine"
+///     Dermot Sets up fake buy with shithead posing as a naive Irish tourist buyer
+///     When he ids the item makes the "It's a go" move by taking off his hat or scratching his arse
+///     All Bodies move in and arrest aforementioned Toad
+///     Transport Shithead to hospital for treatment for a dogbite and then to jail
+///     Jobs a good un
+/// </summary>
+
+namespace Bloodhound
+{
+    public class getStolenItems
+    {
+        public getStolenItems()
+        {
+            //retrieve the stolen items from a predetermined location
+            // one issue here is that the Tab delimited file does not give us an exact date, but rather a year.
+            // This is something I need to work on getting them to change
+            DataTable stolenBikeDataTable = populateDateTableFromTextFile(@"C:\Bicycle.txt");
+            //run dataTable through and print out the three columns we are interested in matching
+            foreach (DataRow row in stolenBikeDataTable.Rows)
+            {
+                if (row["Report Year"]= "2013")
+                {
+                    Console.WriteLine(row["Manufacturers name"]);
+                    Console.WriteLine(row["Model"]);
+                    Console.WriteLine(row["Color"]);
+                }
+            }
+
+            //namely Manufacturer's name, Model, and Color (American spelling)
+            // TODO: need to write a class that matched up the colours since they are currently in code eg. BLK should match
+            //with black or any common misspelling
+            //Also need some sort of a reference for common misspelling of bike names eg. Specialised or Specialized, Schwin or Schwinn
+        }
+            
+        private Datatable populateDataTableFromTextFile(string filename) 
+        {
+            //  Create the new table
+            DataTable data = new DataTable();
+            //  Process the file line by line
+            string line;
+            string[] columnNames;
+            string delimiter = "\t";
+
+            //  Check file
+            if (!File.Exists(filename))
+                throw new FileNotFoundException("File not found", filename);
+
+
+            using (TextReader tr = new StreamReader(filename, Encoding.Default))
+            {
+                //  read column names from the file
+                //  Get the first line
+                line = tr.ReadLine();
+                if (string.IsNullOrEmpty(line))
+                    throw new IOException("Could not read column names from file.");
+                columnNames = line.Split(new string[] { delimiter }, StringSplitOptions.RemoveEmptyEntries);
+                //  Add the columns to the data table
+                foreach (string colName in columnNames)
+                    data.Columns.Add(colName);
+
+                //  Read the file
+                string[] columns;
+                while ((line = tr.ReadLine()) != null)
+                {
+                    columns = line.Split(new string[] { delimiter }, StringSplitOptions.None);
+                    //  Ensure we have the same number of columns
+                    if (columns.Length != columnNames.Length)
+                    {
+                        string message = "Data row has {0} columns and {1} are defined by column names.";
+                        throw new DataException(string.Format(message, columns.Length, columnNames.Length));
+                    }
+                    data.Rows.Add(columns);
+                }
+            }
+            return data;
+
+        }
+
+    }
+}

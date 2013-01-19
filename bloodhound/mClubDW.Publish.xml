@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<publishData>
+  <publishProfile publishUrl="localhost" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="Default Web Site" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="True" profileName="mClubDW" publishMethod="MSDeploy" replaceMatchingFiles="True" userName="" savePWD="False" userPWD="" SelectedForPublish="True">
+    <file relUrl="script/utils.js" publishTime="10/01/2011 13:52:12" />
+    <file relUrl="mClubDWService.svc" publishTime="09/24/2011 18:38:18" />
+    <file relUrl="script/JSpark.js" publishTime="10/01/2011 00:57:58" />
+    <file relUrl="bin/mClubDW.pdb" publishTime="10/03/2011 13:55:14" />
+    <file relUrl="actives-by-day.htm" publishTime="10/01/2011 01:21:34" />
+    <file relUrl="index.htm" publishTime="10/03/2011 13:53:41" />
+    <file relUrl="promo-details.htm" publishTime="10/01/2011 01:21:34" />
+    <file relUrl="Web.config" publishTime="10/03/2011 14:00:40" />
+    <file relUrl="css/Style.css" publishTime="10/01/2011 21:23:38" />
+    <file relUrl="imgs/icon.png" publishTime="09/30/2011 23:57:54" />
+    <file relUrl="maps.htm" publishTime="10/01/2011 13:07:38" />
+    <file relUrl="Global.asax" publishTime="09/25/2011 07:55:22" />
+    <file relUrl="bin/MySql.Data.dll" publishTime="06/22/2011 10:30:44" />
+    <file relUrl="bin/mClubDW.dll" publishTime="10/03/2011 13:55:15" />
+    <file relUrl="total-by-branch.htm" publishTime="10/01/2011 01:21:34" />
+    <file relUrl="merchant-overview.htm" publishTime="10/01/2011 21:54:08" />
+  </publishProfile>
+</publishData>
