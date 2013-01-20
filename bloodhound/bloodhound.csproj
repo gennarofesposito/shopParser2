@@ -90,6 +90,7 @@
     <Content Include="script\utils.js" />
     <Content Include="Global.asax" />
     <Content Include="bloodhoundService.svc" />
+    <Content Include="StolenDataFiles\BIKES.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +103,7 @@
       <DependentUpon>bloodhoundService.svc</DependentUpon>
     </Compile>
     <Compile Include="MultithreadedRSSGetter.cs" />
+    <Compile Include="MultithreadedTinEyeGetter.cs" />
     <Compile Include="MultithreadHTMLGetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

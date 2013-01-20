@@ -20,10 +20,34 @@ public interface IbloodhoundService
     Task<CraigslistInfo[]> GetCraigslistItems(string city, string stolenDate, string pageNumber, string itemDescription);
     [WebGet(UriTemplate = "getCraigslistItemsByRSS/{city}/{stolenDate}/{pageNumber}/{itemDescription}", ResponseFormat = WebMessageFormat.Json)]
     Task<CraigslistInfo[]> GetCraigslistItemsByRSS(string city, string stolenDate, string pageNumber, string itemDescription);
-    [WebInvoke(Method = "POST", UriTemplate = "getTinEyePropertiesForImagesInArticleCollection/{craigslistitemId}", ResponseFormat = WebMessageFormat.Json)]
-    string GetTinEyePropertiesForImagesInArticleCollection(string craigslistitemId, Stream data);
+    [WebGet(UriTemplate = "getTinEyePropertiesForImagesInArticleCollection/{craigsListItemId}/{imagesCollection}", ResponseFormat = WebMessageFormat.Json)]
+    Task<List<TinEyeInfo>> GetTinEyePropertiesForImagesInArticleCollection(string craigsListItemId, string imagesCollection);
 }
 
+
+
+    [DataContract(Namespace = "", Name = "tinEyeInfo")]
+    public class TinEyeInfo
+    {
+        [DataMember(Name = "craigslistInfoId", Order = 0)]
+        public string CraigslistInfoId;
+        [DataMember(Name = "tinEyeImageInfos", Order = 1)]
+        public List<TinEyeImageInfo> TinEyeImageInfos;
+
+        public TinEyeInfo()
+        {
+            this.TinEyeImageInfos = new List<TinEyeImageInfo>();
+        }
+    }
+
+    [DataContract(Namespace = "", Name = "tinEyeImageInfo")]
+    public class TinEyeImageInfo
+    {
+        [DataMember(Name = "imageURI", Order = 0)]
+        public string ImageURI;
+        [DataMember(Name = "tinEyeImageCount", Order = 1)]
+        public int TinEyeImageCount;
+    }
 
     [DataContract(Namespace = "", Name = "craigslistInfo")]
     public class CraigslistInfo
@@ -249,7 +273,7 @@ public interface IbloodhoundService
         public static async Task<CraigslistInfo> ProcessURL(string url, HttpClient client)
         {
             //
-            // The detail page is not available in RSS, so have to parse the HTML for it (much hard than the ice XML you get frmo RSS feed)
+            // The detail page is not available in RSS, so have to parse the HTML for it (much harder than the nice XML you get frmo RSS feed)
             // to kae this easier use a special gizmo called the HTMl agility pack that parses the 
             // HTMl into a document tree (and fixes errors etc in the HTMl) - this allows us to traverse the page safely
             //

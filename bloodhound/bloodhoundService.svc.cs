@@ -24,7 +24,9 @@ namespace bloodhound
 
 
         #region IbloodhoundService Members
-
+        const string IMAGESEPERATOR = "XKRXKRXKR";
+        const int DEFAULT_IMAGE_COUNT = 0;
+        const string TINEYE_IMAGE_URL_STUB = "http://images.craigslist.org/";
         /// <summary>
         /// Search craislist site for mathing items
         /// </summary>
@@ -57,15 +59,30 @@ namespace bloodhound
 
         /// <summary>
         /// Check the images associated with a sraigslit article in tineye to see if they are original or are 'stock' images from elsewhere on the web
-        /// this is part of the doginess check. If a stock image is used then it's dodgier
+        /// this is part of the dodginess check. If a stock image is used then it's dodgier
         /// </summary>
-        /// <param name="craigslistitemId"></param>
+        /// <param name="craigsListItemId"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public string GetTinEyePropertiesForImagesInArticleCollection(string craigslistitemId, Stream data)
+        public async Task<List<TinEyeInfo>> GetTinEyePropertiesForImagesInArticleCollection(string craigsListItemId, string imagesCollection)
         {
-            /// Geno to here
-            return "not yet implemented";
+            //
+            // Convert the incoming text from the querystring into a collection objects and pass into the multithreaded getters
+            //
+            string[] images = imagesCollection.Split(new string[] { IMAGESEPERATOR }, StringSplitOptions.None);
+            List<TinEyeInfo> tinEyeInfos = new List<TinEyeInfo>();
+            TinEyeInfo tinEyeInfo = new TinEyeInfo();
+            tinEyeInfo.CraigslistInfoId = craigsListItemId;
+            foreach ( string image in images) {
+                TinEyeImageInfo tinEyeImageInfo = new TinEyeImageInfo();
+                tinEyeImageInfo.ImageURI = TINEYE_IMAGE_URL_STUB + image;
+                tinEyeImageInfo.TinEyeImageCount = DEFAULT_IMAGE_COUNT;
+                tinEyeInfo.TinEyeImageInfos.Add(tinEyeImageInfo);
+            }
+            tinEyeInfos.Add(tinEyeInfo);
+            MultithreadedTinEyeGetter tinEye = new MultithreadedTinEyeGetter();
+            return await tinEye.GetTinEyeInfo(tinEyeInfos);
+            //return "not yet implemented";
         }
 
         
