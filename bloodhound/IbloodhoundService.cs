@@ -56,6 +56,10 @@ public interface IbloodhoundService
         const int DODGY_POINTS_IMAGE_ITEM_REDUCTION_VALUE = -50;
         const int DODGY_POINTS_WORD_MAXIMUM = 500;
         const int DODGY_POINTS_WORD_ITEM_REDUCTION_VALUE = -1;
+        const int LENGTH_OF_TEL_NUMBER = 12;
+        const string VANCOUVER_TEL_CODE1 = "604";
+        const string VANCOUVER_TEL_CODE2 = "708";
+        const string DEFAULT_TEL_NUMBER = "12345678";
 
         [DataMember(Name = "linkURL", Order = 0)]
         public string LinkURL;
@@ -81,16 +85,26 @@ public interface IbloodhoundService
         public string ShortTitle;
         [DataMember(Name = "category", Order = 11)]
         public string Category;
-        [DataMember(Name = "datePostedParsed", Order = 11)]
+        [DataMember(Name = "datePostedParsed", Order = 12)]
         public string DatePostedParsed;
-        [DataMember(Name = "dodgyDescription", Order = 12)]
+        [DataMember(Name = "dodgyDescription", Order = 13)]
         public string DodgyDesciption;
 
         public void updateCraigslistInfoFromFullItemDetailsPage(HtmlAgilityPack.HtmlDocument htmlDoc, string url)
         {
             HtmlAgilityPack.HtmlNode time = htmlDoc.DocumentNode.SelectSingleNode("//time");
             HtmlAgilityPack.HtmlNode title = htmlDoc.DocumentNode.SelectSingleNode("//h2");
-            HtmlAgilityPack.HtmlNode bodyElement = htmlDoc.GetElementbyId("userbody");
+            //
+            // Userbdy section has javascript with all the images on it and the descripion etc - the main chunk of data for the listing in other words
+            // The userbody section used to be delineated by a <section id="userbody"> ... </section>
+            //
+            //HtmlAgilityPack.HtmlNode bodyElement = htmlDoc.GetElementbyId("userbody");
+            //
+            // but it changes Jan 2013 to be <sction class="userbody"> ... </section>
+            //
+            HtmlAgilityPack.HtmlNode bodyElement = htmlDoc.DocumentNode.SelectSingleNode("//section[@class='userbody']");
+
+            
             //
             // magic here to trim down the HTML, break it up, analyze it etc
             // you can see example HTMl for the pages at URLs like this
@@ -152,6 +166,8 @@ public interface IbloodhoundService
             //
             // First of all parse the date : Dec 11
             //
+            // .:TODO:. this is not working and throwing the exception every time - and using the output in jscript breaks the page!
+            //
             string[] formats = { " MMM dd" };
             try
             {
@@ -191,6 +207,11 @@ public interface IbloodhoundService
         ///         as our small volumes may go unnoticed / unpunished. 
         ///         For the time make it event driven - so we do tineye checks by clicking on the FE to initiatite 
         ///         tineye checks - this will keep volumes small
+        ///     2a) When we get a tineye hit we need to store the URL of the original miage tineye founf in our DB, 
+        ///         subsequent tineye hits that use the same stock image then become more dodgy since this fits the 
+        ///         profile of one guy selling lots of ripped off gear with the same craigslist modus opperandi
+        ///         Dermot says this might be especially true of e.g. iPhone thefts
+        ///         [easy - but need a postgres DB]
         ///     3)brevity of the descriptive text   (naive implementation DONE)
         ///     4) Bayesian filtering to 'learn' dodgy words or phrases (same algorithmic tech as in spam filters)
         ///     5) Timing - is there an average time after somthing is stolen that it goes on craigslist? 
@@ -208,6 +229,9 @@ public interface IbloodhoundService
         ///         [hard / impossible as cannot identify seller in most cases no way to identify seller from the ad's data]
         ///     12) looking up the phone number in a Database of known offenders phone numbers 
         ///        [hard / impossible as cannot identify seller in almost all cases there are no phone numbers]
+        ///     13) looking up the phone number in a Database all other phone numbers we've found before 
+        ///         when the same guy is posting lots of stuff - it is suspicous
+        ///         [easy - but need a postgres DB]
         ///     14) Are some phone numbers 'dodgy' by definition - like the 'burner phones' in The Wire - do 
         ///        those have specific number ranges?
         ///        [hard / impossible as cannot identify seller in almost all cases there are no phone numbers]
@@ -255,12 +279,35 @@ public interface IbloodhoundService
         /// Figure out the phone number using regex's
         /// see http://code.google.com/p/libphonenumber/
         /// in practice I've only found 1 or 2 craigslist adverts that have phione numbers so lets not bother with this currently
+        /// unfortunately the google stuff is not c# so do just some simple stuff:
+        /// Look for 604***** and 708******
+        /// In practice we should make a list of the phone numbers we find and - then if they start to repeat - it is dodgy
         /// </summary>
         /// <param name="bodyElement"></param>
         /// <returns></returns>
         public string extractPhoneNumber(HtmlAgilityPack.HtmlNode bodyElement)
         {
-            return "12345678";
+            string result = DEFAULT_TEL_NUMBER;
+            int potentialPhoneNumber = bodyElement.InnerText.IndexOf(VANCOUVER_TEL_CODE1, 0);
+            if (potentialPhoneNumber > 0)
+            {
+                result = bodyElement.InnerText.Substring(potentialPhoneNumber, LENGTH_OF_TEL_NUMBER);
+            }
+            else
+            {
+                potentialPhoneNumber = bodyElement.InnerText.IndexOf(VANCOUVER_TEL_CODE2, 0);
+                if (potentialPhoneNumber > 0)
+                {
+                    result = bodyElement.InnerText.Substring(potentialPhoneNumber, LENGTH_OF_TEL_NUMBER);
+                }
+            }
+            //
+            // strip out anything that's not a number (dashes, whitespace, letters)
+            //
+            char[] arr = result.ToCharArray();
+            //arr = Array.FindAll<char>(arr, (c => (char.IsLetter(c) || char.IsWhiteSpace(c) || c == '-')));
+            arr = Array.FindAll<char>(arr, (c => (char.IsDigit(c))));
+            return new string(arr);
         }
 
 

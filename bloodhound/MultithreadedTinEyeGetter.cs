@@ -100,7 +100,7 @@ namespace bloodhound
                 //
                 // Parse the HTML and extract the image count and us it to update the tinEyeImageInfo.TinEyeImageCount property
                 //
-                // Geno to here : just started debugging this tin eye stuff to it working boradly
+                // Geno to here : just started debugging this tin eye stuff to get it working boradly
                 // will then need to get the regexs right to pull out the tineye count
                 // something like :
                 //         its in their page in the format :  <h2><span>0</span> Results</h2>

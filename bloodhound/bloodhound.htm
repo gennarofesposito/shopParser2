@@ -88,7 +88,9 @@
                             imageHtml += "<img height='150' width='150' src='" + value + "'>&nbsp;"
                         });
                     }
-                    $('#results').append("<div>" + val.title + "<br/>" + val.decriptionHTML + "<br/><a target='blank' href='" + val.linkURL + "'>link to full article</a>&nbsp;date: " & val.datePostedParsed & "&nbsp;Dodginess : " + val.dodgyScore + "&nbsp;&nbsp;&nbsp;" + imageHtml + "</div><hr>");
+                    // using the datePostedReal breaks the page - something to do with the c# throwing an exception when it's calculated
+                    //$('#results').append("<div>" + val.title + "<br/>" + val.decriptionHTML + "<br/><a target='blank' href='" + val.linkURL + "'>link to full article</a>&nbsp;date: " & val.datePostedReal & "&nbsp;Dodginess : " + val.dodgyScore + "&nbsp;&nbsp;&nbsp;" + imageHtml + "</div><hr>");
+                    $('#results').append("<div>" + val.title + "<br/>" + val.decriptionHTML + "<br/><a target='blank' href='" + val.linkURL + "'>link to full article</a>&nbsp;&nbsp;Dodginess : " + val.dodgyScore + "&nbsp;&nbsp;&nbsp;" + imageHtml + "</div><hr>");
                 });
             })
             .error(function (jqXHR, textStatus, errorThrown) {
@@ -163,7 +165,7 @@
             </div>
         </fieldset>
     </form>
-    <div id="results" class="results">result</div>
+    <div id="results" >result</div>
     <hr />
     <div id="debug"></div>
 </body>
